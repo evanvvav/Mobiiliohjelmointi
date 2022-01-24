@@ -1,59 +1,54 @@
-import {useState} from "react";
-import { SafeAreaView, StyleSheet, TextInput, Text, Button, View, Alert } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  Button,
+  Alert,
+  View,
+  TextInput,
+} from "react-native";
 
-const App = () => {
 
-  const [answer, setAnswer] = useState(null);
-  const [number1, setNumber1] = useState('');
-  const [number2, setNumber2] = useState('');
+export default function App() {
+  const [display, setDisplay] = useState('Guess a number between 1-100!');
+  const [answer, setAnswer] = useState('');
+  const [number, setNumber] = useState('');
 
-  const plus = () => {
-    setAnswer(parseInt(number1) + parseInt(number2));
+  useEffect(() => {
+    createAnswer();
+  }, []);
+
+  const createAnswer = () => {
+    setAnswer(Math.floor(Math.random() * 100) + 1);
   };
 
-  const minus = () => {
-    setAnswer(parseInt(number1) - parseInt(number2));
+  const handlePress = () => {
+    if (parseInt(number) > answer) {
+      setDisplay('Your guess ' + number + ' is too high');
+    } else if (parseInt(number) < answer) {
+      setDisplay('Your guess ' + number + ' is too low');
+    } else {
+      Alert.alert("Correct! Number is " + answer);
+      createAnswer();
+    }
   };
-
-
 
   return (
     <SafeAreaView style={styles.container}>
-
-      <Text style={styles.Text}>
-        Result: {answer} </Text>
-
-      <TextInput
-        value={number1}
-        style={styles.input}
-        onChangeText={(value) => setNumber1(value)}
-        keyboardType="numeric"
-        placeholder="number 1"
+      <Text style={styles.text}>{display}</Text>
+      <TextInput 
+      style={styles.input} 
+      onChangeText={(value) => setNumber(value)}
+      keyboardType="numeric"
+      placeholder="number"
       />
-      <TextInput
-        value={number2}
-        style={styles.input}
-        onChangeText={(value) => setNumber2(value)}
-        keyboardType="numeric"
-        placeholder="number 2"
-      />
-  
-      <View style={styles.fixToText}>
-        <Button
-          title="+"
-          onPress={plus}
-        />
-        <Button
-          title="-"
-          onPress={minus}
-        />
+      <View>
+        <Button title="MAKE GUESS" onPress={() => handlePress()} />
       </View>
     </SafeAreaView>
   );
-};
-
-
-
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -67,21 +62,11 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    
-    
   },
-  fixToText: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10
-    ,
-  },
-  Text: {
+  text: {
     padding: 10,
     fontSize: 20,
     textAlign: 'center',
-
   },
-});
 
-export default App;
+});
