@@ -1,52 +1,74 @@
-import React from "react";
+import {useState} from "react";
 import { SafeAreaView, StyleSheet, TextInput, Text, Button, View, Alert } from "react-native";
 
 const App = () => {
-  const [number1, onChangeNumber1] = React.useState(null);
-  const [number2, onChangeNumber2] = React.useState(null);
+
+  const [answer, setAnswer] = useState(null);
+  const [number1, setNumber1] = useState('');
+  const [number2, setNumber2] = useState('');
+
+  const plus = () => {
+    setAnswer(parseInt(number1) + parseInt(number2));
+  };
+
+  const minus = () => {
+    setAnswer(parseInt(number1) - parseInt(number2));
+  };
+
+
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
 
       <Text style={styles.Text}>
-        Result: </Text>
+        Result: {answer} </Text>
 
       <TextInput
-        style={styles.input}
-        onChangeText={onChangeNumber1}
         value={number1}
-        placeholder="number 1"
-        keyboardType="numeric"
-      />
-
-      <TextInput
         style={styles.input}
-        onChangeText={onChangeNumber2}
-        value={number2}
-        placeholder="number 2"
+        onChangeText={(value) => setNumber1(value)}
         keyboardType="numeric"
+        placeholder="number 1"
+      />
+      <TextInput
+        value={number2}
+        style={styles.input}
+        onChangeText={(value) => setNumber2(value)}
+        keyboardType="numeric"
+        placeholder="number 2"
       />
   
       <View style={styles.fixToText}>
         <Button
-          title="+ Function"
-          onPress={() => Alert.alert("Answer is " + (number1 + number2))}
+          title="+"
+          onPress={plus}
         />
         <Button
-          title="- Function"
-          onPress={() => Alert.alert("Answer is " + (number1 - number2))}
+          title="-"
+          onPress={minus}
         />
       </View>
     </SafeAreaView>
   );
 };
 
+
+
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   input: {
-    height: 40,
+    height: 36,
+    width: 100,
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    
+    
   },
   fixToText: {
     flexDirection: 'row',
@@ -57,6 +79,7 @@ const styles = StyleSheet.create({
   Text: {
     padding: 10,
     fontSize: 20,
+    textAlign: 'center',
 
   },
 });
