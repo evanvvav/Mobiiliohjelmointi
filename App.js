@@ -1,72 +1,88 @@
 import { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  Button,
-  Alert,
-  View,
-  TextInput,
-} from "react-native";
+import { StyleSheet, SafeAreaView, Text, View, Button,} from "react-native";
+import { FlatList, TextInput } from "react-native-web";
 
 
 export default function App() {
-  const [display, setDisplay] = useState('Guess a number between 1-100!');
-  const [answer, setAnswer] = useState('');
-  const [number, setNumber] = useState('');
 
-  useEffect(() => {
-    createAnswer();
-  }, []);
+  const [result, setResult] = useState(null);
+  const [number1, setNumber1] = useState('');
+  const [number2, setNumber2] = useState('');
 
-  const createAnswer = () => {
-    setAnswer(Math.floor(Math.random() * 100) + 1);
-  };
+  const [history, setHistory] = useState([])
 
-  const handlePress = () => {
-    if (parseInt(number) > answer) {
-      setDisplay('Your guess ' + number + ' is too high');
-    } else if (parseInt(number) < answer) {
-      setDisplay('Your guess ' + number + ' is too low');
-    } else {
-      Alert.alert("Correct! Number is " + answer);
-      createAnswer();
-    }
-  };
+  const handlePlus = () => {
+    setResult(parseInt(number1) + parseInt(number2));
+    setHistory((list) => {
+      return [
+        {text: number1 + ' + ' + number2 + ' = ' + (parseInt(number1) + parseInt(number2)) },
+        ...list
+      ]
+       
+    });
+  }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>{display}</Text>
-      <TextInput 
-      style={styles.input} 
-      onChangeText={(value) => setNumber(value)}
-      keyboardType="numeric"
-      placeholder="number"
-      />
-      <View>
-        <Button title="MAKE GUESS" onPress={() => handlePress()} />
+  const handleMinus = () => {
+    setResult(parseInt(number1) - parseInt(number2));
+    setHistory((list) => {
+      return [
+        {text: number1 + ' - ' + number2 + ' = ' + (parseInt(number1) - parseInt(number2)) },
+        ...list
+      ]
+       
+    });
+  }
+
+   return (
+    <SafeAreaView style={styles.main}>
+      <Text style={styles.text}>Result: {result}</Text>
+      <TextInput style={styles.input} keyboardType="numeric" 
+      value={number1} onChangeText={(value) => setNumber1(value)}/>
+      <TextInput style={styles.input} keyboardType="numeric" 
+      value={number2} onChangeText={(value) => setNumber2(value)}/>
+    <View style={styles.buttons}>
+      <View style={styles.button}>
+        <Button title="+" onPress={() => handlePlus()}/>
       </View>
+      <View style={styles.button}>
+        <Button title="-" onPress={() => handleMinus()}/>
+      </View>
+    </View>
+    <Text style={styles.text}>History</Text>
+    <View>
+      <FlatList data={history} renderItem={({ item }) => (
+        <Text style={styles.text}>{item.text}</Text>
+      )}/>
+    </View>
+
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  main: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  input: {
-    height: 36,
-    width: 100,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'silver',
   },
   text: {
-    padding: 10,
-    fontSize: 20,
-    textAlign: 'center',
+    fontSize: 18,
   },
-
+  input: {
+    borderWidth: 1,
+    width: 160,
+    height: 30,
+    margin: 1,
+    backgroundColor: 'white',
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '40%',
+    margin: 4,
+  },
+  button: {
+    width: 57,
+  },
 });
