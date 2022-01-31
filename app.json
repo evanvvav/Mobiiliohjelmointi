@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "demo-project",
-    "slug": "demo-project",
+    "name": "Tehtava-5-Done",
+    "slug": "tehtava-5-done",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,6 +27,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": ""
   }
 }
