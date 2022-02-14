@@ -1,52 +1,65 @@
+
 import { useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView, Text, View, Button, TextInput, FlatList, Alert, Image} from "react-native";
+import { StyleSheet, SafeAreaView, Text, Button, TextInput, Image, Picker} from "react-native";
 
 
 export default function App() {
 
-  const [keyword, setKeyword] = useState('');
-  const [repositories, setRepositories] = useState([]);
+  const [input, setInput] = useState('');
+  const [exchangeRates, setExchangeRates] = useState([]);
+  const [result, setResult] = useState('');
+  const [currency, setCurrency] = useState("AED");
+  const [pickerItem, setPickerItem] = useState([]);
 
-  const getRepositories = () => {
-    fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${keyword}`)
+  
+
+    useEffect(() => {
+    fetch(`http://api.exchangeratesapi.io/v1/latest?access_key=ffb35a4692fdba9c4190856954c31082&format=1`)
     .then(response => response.json())
-    .then(data => setRepositories(data.meals)) 
-    .catch(error => {
-        Alert.alert('Error', error);
-
+    .then((data) => {
+      setExchangeRates(data.rates);
+      setPickerItem(Object.keys(data.rates));
     });
-  }
+      }, []);
+
+  const getConverted  = () => {
+    setResult(input / exchangeRates[currency].toFixed(2) + "€");
+  };
+
 
    return (
     <SafeAreaView style={styles.main}>
-        <TextInput style={styles.input} onChangeText={ text => setKeyword(text) }/>
-        <Button title="Find" onPress = {getRepositories}/>
-
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) =>
-          <View>
-            <Text
-              style={{fontSize:18, fontWeight: "bold"}}>{item.strMeal}
-            </Text>
-            <Image source={{uri: item.strMealThumb}}
+    <Image source={{uri: 'https://thumb.mp-farm.com/49913001/preview.jpg'}}
              style={{width:200, height: 200}} />
-            
+
+      <Text style={styles.text}>Answer: {result} </Text>
+
+      <TextInput style={styles.input} keyboardType="numeric" placeholder="value" onChangeText={ text => setInput(text) } 
+      />
+        <Picker
+          selectedValue={currency}
+          
+          onValueChange={(itemValue) => setCurrency(itemValue)}
+        >
+          {pickerItem.map((item) => (
+            <Picker.Item label={item} value={item} />
+          ))}
+        </Picker>
       
-            
-          </View>}
-          data={repositories}/>
+      <Button style={styles.button} title="Convert" onPress = {getConverted}/>
+
+      
     </SafeAreaView> 
   );
 }
 
 const styles = StyleSheet.create({
   main: {
-    paddingTop: 60,
+    paddingTop: 100,
     flex: 1,
-    justifyContent: 'center',
+   
     alignItems: 'center',
-    backgroundColor: 'silver',
+    backgroundColor: 'white',
   },
   text: {
     fontSize: 18,
@@ -57,6 +70,7 @@ const styles = StyleSheet.create({
     height: 30,
     margin: 1,
     backgroundColor: 'white',
+    padding: 5,
     
   },
   buttons: {
